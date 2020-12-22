@@ -35,5 +35,22 @@ def image_get(servant):
             f.write(r2.content)
     return redirect(url_for("home"))
 
+@app.route("/keys")
+def keys():
+    servant_link = []
+    servant_key = []
+    servant_key.sort()
+    url = "https://gamepress.gg/grandorder/servant"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, features="html.parser")
+    servant_links = soup.find_all(class_="views-field views-field-title")
+    for a in servant_links:
+        for i in a.find_all("a"):
+            servant_link.append(i.get("href"))
+    for key in servant_link:
+        servant_key.append(key.split("/")[3])
+    return render_template("keys.html", servant_key=sorted(servant_key))
+
+
 if __name__ == "__main__":
     app.run()
